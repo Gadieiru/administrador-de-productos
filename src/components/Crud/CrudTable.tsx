@@ -104,10 +104,8 @@ export const CrudTable = () => {
 
         <tbody className="divide-y divide-cyan-900/30">
           {isLoading || isFetching ? (
-            /* 1. Mientras carga, mostramos los esqueletos */
             <TableSkeleton />
           ) : products && products.length > 0 ? (
-            /* 2. Si hay productos, mapeamos las filas normalmente */
             products.map((e) => (
               <tr key={e.id} className="hover:bg-[#24465c] transition-colors">
                 <td className="px-2 py-1 flex justify-center">
@@ -130,14 +128,14 @@ export const CrudTable = () => {
                 </td>
                 <td className="px-2 py-1 text-center">
                   <button
-                    className="text-cyan-600 hover:scale-110 hover:text-cyan-300 px-1"
+                    className="text-cyan-600 hover:scale-110 px-1"
                     onClick={() => setEditingProduct(e)}
                   >
                     ✎
                   </button>
                   <button
+                    className="text-cyan-600 hover:text-red-500/70 px-1"
                     onClick={() => setProductToDelete(e)}
-                    className="text-cyan-600 hover:text-red-500/70 px-1 transition-colors hover:scale-110 active:scale-90"
                   >
                     🗑
                   </button>
@@ -145,17 +143,16 @@ export const CrudTable = () => {
               </tr>
             ))
           ) : (
-            /* 3. Si NO hay productos (Búsqueda vacía), mostramos el mensaje y el botón de limpiar */
             <tr>
               <td colSpan={6} className="py-20 text-center">
                 <div className="flex flex-col items-center justify-center space-y-2">
                   <span className="text-3xl">🔍</span>
                   <p className="text-cyan-600 font-medium italic">
-                    No se encontraron productos para esta búsqueda.
+                    No se encontraron productos.
                   </p>
                   <button
                     onClick={() => setSearchParams({ page: "1" })}
-                    className="mt-2 text-cyan-400 underline text-[10px] uppercase tracking-widest font-bold hover:text-cyan-200 transition-colors"
+                    className="mt-2 text-cyan-400 underline text-[10px] font-bold uppercase tracking-widest"
                   >
                     Ver todos los productos
                   </button>

@@ -38,7 +38,6 @@ export const SearchBar = () => {
     return () => clearTimeout(timeout);
   }, [localQuery, query, searchParams, setSearchParams]);
 
-
   const { data: listaCategorias } = useCategories();
 
   const selectOptions: SelectOption[] =
@@ -48,7 +47,8 @@ export const SearchBar = () => {
     })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalQuery(e.target.value);
+    const text = e.target.value;
+    setLocalQuery(text);
   };
 
   const SelectValue = selectOptions.find((opt) => opt.value === category);
@@ -62,71 +62,71 @@ export const SearchBar = () => {
     setSearchParams(searchParams);
   };
 
-const customStyles = {
-  // Contenedor principal
-  control: (base: any, state: any) => ({
-    ...base,
-    backgroundColor: "#162a37",
-    borderColor: state.isFocused ? "#0891b2" : "#164e63", // Cian cuando está activo
-    color: "#22d3ee",
-    minHeight: "38px",
-    boxShadow: state.isFocused ? "0 0 0 1px #0891b2" : "none",
-    "&:hover": {
-      borderColor: "#0891b2",
-    },
-  }),
-  // El texto que el usuario ve escrito
-  singleValue: (base: any) => ({
-    ...base,
-    color: "#22d3ee", // Texto color cian
-  }),
-  // El menú desplegable
-  menu: (base: any) => ({
-    ...base,
-    backgroundColor: "#162a37",
-    border: "1px solid #164e63",
-  }),
-  // Las opciones dentro del menú
-  option: (base: any, state: any) => ({
-    ...base,
-    backgroundColor: state.isSelected 
-      ? "#0891b2" 
-      : state.isFocused 
-      ? "#1e3a4d" 
-      : "#162a37",
-    color: state.isSelected ? "white" : "#22d3ee",
-    cursor: "pointer",
-    "&:active": {
-      backgroundColor: "#0891b2",
-    },
-  }),
-  // El placeholder y los iconos
-  placeholder: (base: any) => ({
-    ...base,
-    color: "#164e63",
-  }),
-  dropdownIndicator: (base: any) => ({
-    ...base,
-    color: "#164e63",
-    "&:hover": { color: "#22d3ee" },
-  }),
-  clearIndicator: (base: any) => ({
-    ...base,
-    color: "#164e63",
-    "&:hover": { color: "#ef4444" },
-  }),
-};
+  const customStyles = {
+    // Contenedor principal
+    control: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: "#162a37",
+      borderColor: state.isFocused ? "#0891b2" : "#164e63", // Cian cuando está activo
+      color: "#22d3ee",
+      minHeight: "38px",
+      boxShadow: state.isFocused ? "0 0 0 1px #0891b2" : "none",
+      "&:hover": {
+        borderColor: "#0891b2",
+      },
+    }),
+    // El texto que el usuario ve escrito
+    singleValue: (base: any) => ({
+      ...base,
+      color: "#22d3ee", // Texto color cian
+    }),
+    // El menú desplegable
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: "#162a37",
+      border: "1px solid #164e63",
+    }),
+    // Las opciones dentro del menú
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "#0891b2"
+        : state.isFocused
+          ? "#1e3a4d"
+          : "#162a37",
+      color: state.isSelected ? "white" : "#22d3ee",
+      cursor: "pointer",
+      "&:active": {
+        backgroundColor: "#0891b2",
+      },
+    }),
+    // El placeholder y los iconos
+    placeholder: (base: any) => ({
+      ...base,
+      color: "#164e63",
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      color: "#164e63",
+      "&:hover": { color: "#22d3ee" },
+    }),
+    clearIndicator: (base: any) => ({
+      ...base,
+      color: "#164e63",
+      "&:hover": { color: "#ef4444" },
+    }),
+  };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="relative">
         <input
-        type="text"
-        value={localQuery}
-        onChange={handleSearch}
-        placeholder="Buscar productos"
-        className="w-full bg-[#162a37] border border-[#164e63] text-[#22d3ee] p-2 rounded outline-none focus:border-[#0891b2] transition-colors"
-      />
+          type="text"
+          value={localQuery}
+          onChange={handleSearch}
+          placeholder="Buscar productos"
+          className="w-full bg-[#162a37] border border-[#164e63] text-[#22d3ee] p-2 rounded outline-none focus:border-[#0891b2] transition-colors"
+        />
       </div>
 
       <div>
