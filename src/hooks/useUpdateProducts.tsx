@@ -22,27 +22,24 @@ export const useUpdateProducts = () => {
       const previousProducts = queryClient.getQueryData<Product[]>(queryKey);
 
       queryClient.setQueryData<Product[]>(queryKey, (old) => {
-        return old?.map((p) =>
-          p.id === id ? { ...p, ...updates } : p,
-        );
+        return old?.map((p) => (p.id === id ? { ...p, ...updates } : p));
       });
 
       return { previousProducts };
     },
 
-    onError: (err, _variables, context) => {
+    onError: (_err, _variables, context) => {
       if (context?.previousProducts) {
         queryClient.setQueryData(queryKey, context.previousProducts);
       }
 
-      toast.error("Error al guardar cambios. Revirtiendo...", {
+      toast.error("No se pudo actualizar el producto", {
         id: "update-error",
       });
-      console.log("mutation Error:", err);
     },
 
     onSuccess: () => {
-      toast.success("¡Producto actualizado!");
+      toast.success("¡Precio y Stock actualizados!");
     },
 
     onSettled: () => {

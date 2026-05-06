@@ -56,5 +56,7 @@
 
 4) CRUD Completo: Crear, Leer, Actualizar y Borrar con retroalimentación inmediata.
 
-Gestión de Errores: Reversión de cambios (rollback) en mutaciones fallidas.📬 ContactoDesarrollado con ❤️ por Gadieiru.¡Siéntete libre de revisar el código y dar feedback!
+5) Gestión de Errores: Reversión de cambios (rollback) en mutaciones fallidas.
+
+Desarrollado con ❤️ por Gadiel.¡Siéntete libre de revisar el código y dar feedback!
 

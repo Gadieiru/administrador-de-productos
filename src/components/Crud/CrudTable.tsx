@@ -6,6 +6,7 @@ import { type Product } from "../../interfaces/product";
 import { useEffect, useState } from "react";
 import { getFilteredProducts, getProducts } from "../../api/productsApi";
 import { useDeleteProduct } from "../../hooks/useDeleteProducts";
+import { TableSkeleton } from "../UI/TableSkeleton";
 
 export const CrudTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,7 +14,13 @@ export const CrudTable = () => {
   const queryClient = useQueryClient();
   const page = parseInt(searchParams.get("page") || "1");
 
-  const { data: products, isLoading, isError, isFetching } = useProducts(page);
+  const {
+    data: products,
+    isLoading,
+    isError,
+    isFetching,
+    refetch,
+  } = useProducts(page);
 
   const { mutate } = useUpdateProducts();
 
@@ -64,55 +71,101 @@ export const CrudTable = () => {
   };
 
   if (isLoading) return <p>Cargando...</p>;
-  if (isError) return <p>HA OCURRIDO UN ERROR</p>;
+  if (isError)
+    return (
+      <div className="flex flex-col items-center justify-center p-10 border border-red-900/50 rounded-lg bg-red-950/20">
+        <p className="text-red-400 font-bold mb-4 italic">
+          ⚠️ HA OCURRIDO UN ERROR DE CONEXIÓN
+        </p>
+        <button
+          onClick={() => refetch()}
+          className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-black transition-all active:scale-95"
+        >
+          REINTENTAR CARGA
+        </button>
+      </div>
+    );
 
   return (
     <div className="overflow-x-auto rounded-lg border border-cyan-900/50 bg-[#1e3a4d]">
-      <h2>Productos</h2>
-      {isFetching && <p className="loading-tag">Actualizando resultados...</p>}
+      <h2 className="p-4 text-cyan-100 font-bold">Productos</h2>
+
       <table className="w-full text-xs text-left">
         <thead className="bg-[#162a37] text-cyan-500 uppercase tracking-wider border-b border-cyan-900">
           <tr>
-            <th className="px-2 py-2 text-center">Imagen</th>
-            <th className="px-2 py-2">Nombre</th>
-            <th className="px-2 py-2">Precio</th>
-            <th className="px-2 py-2">Categoria</th>
-            <th className="px-2 py-2 text-center">Existencias</th>
-            <th className="px-2 py-2 text-center">Acciones</th>
+            <th className="px-4 py-3 text-center">Imagen</th>
+            <th className="px-4 py-3 text-left">Nombre</th>
+            <th className="px-4 py-3 text-right">Precio</th>
+            <th className="px-4 py-3 text-left">Categoría</th>
+            <th className="px-4 py-3 text-right">Stock</th>
+            <th className="px-4 py-3 text-center">Acciones</th>
           </tr>
         </thead>
+
         <tbody className="divide-y divide-cyan-900/30">
-          {products?.map((e) => (
-            <tr key={e.id} className="hover:bg-[#24465c] transition-colors">
-              <td className="px-2 py-1 flex justify-center">
-                <img
-                  src={e.thumbnail}
-                  alt={e.title}
-                  className="w-8 h-8 object-cover rounded border border-cyan-800"
-                />
-              </td>
-              <td className="px-2 py-1 font-medium text-cyan-100">{e.title}</td>
-              <td className="px-2 py-1 font-mono text-cyan-300">{e.price}$</td>
-              <td className="px-2 py-1 text-cyan-700">{e.category}</td>
-              <td className="px-2 py-1 text-center text-cyan-100">{e.stock}</td>
-              <td className="px-2 py-1 text-center">
-                <button
-                  className="text-cyan-600 hover:scale-110 hover:text-cyan-300 px-1"
-                  onClick={() => setEditingProduct(e)}
-                >
-                  ✎
-                </button>
-                <button
-                  onClick={() => setProductToDelete(e)} // 'e' es el producto del map
-                  className="text-cyan-600 hover:text-red-500/70 px-1 transition-colors hover:scale-110 active:scale-90"
-                >
-                  🗑
-                </button>
+          {isLoading || isFetching ? (
+            /* 1. Mientras carga, mostramos los esqueletos */
+            <TableSkeleton />
+          ) : products && products.length > 0 ? (
+            /* 2. Si hay productos, mapeamos las filas normalmente */
+            products.map((e) => (
+              <tr key={e.id} className="hover:bg-[#24465c] transition-colors">
+                <td className="px-2 py-1 flex justify-center">
+                  <img
+                    src={e.thumbnail}
+                    alt={e.title}
+                    className="w-8 h-8 object-cover rounded border border-cyan-800"
+                  />
+                </td>
+                <td className="px-4 py-2 font-semibold text-cyan-100">
+                  {e.title}
+                </td>
+                <td className="px-4 py-2 text-right font-mono text-cyan-300 text-sm">
+                  ${e.price.toFixed(2)}
+                </td>
+                <td className="px-4 py-2 text-cyan-700 italic">{e.category}</td>
+                <td className="px-4 py-2 text-right font-medium text-cyan-100">
+                  {e.stock}{" "}
+                  <span className="text-[10px] text-cyan-800 ml-1">Uds</span>
+                </td>
+                <td className="px-2 py-1 text-center">
+                  <button
+                    className="text-cyan-600 hover:scale-110 hover:text-cyan-300 px-1"
+                    onClick={() => setEditingProduct(e)}
+                  >
+                    ✎
+                  </button>
+                  <button
+                    onClick={() => setProductToDelete(e)}
+                    className="text-cyan-600 hover:text-red-500/70 px-1 transition-colors hover:scale-110 active:scale-90"
+                  >
+                    🗑
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            /* 3. Si NO hay productos (Búsqueda vacía), mostramos el mensaje y el botón de limpiar */
+            <tr>
+              <td colSpan={6} className="py-20 text-center">
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <span className="text-3xl">🔍</span>
+                  <p className="text-cyan-600 font-medium italic">
+                    No se encontraron productos para esta búsqueda.
+                  </p>
+                  <button
+                    onClick={() => setSearchParams({ page: "1" })}
+                    className="mt-2 text-cyan-400 underline text-[10px] uppercase tracking-widest font-bold hover:text-cyan-200 transition-colors"
+                  >
+                    Ver todos los productos
+                  </button>
+                </div>
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
       <div className="flex items-center justify-between mt-4 text-[10px] text-cyan-700 uppercase px-2">
         <span>Página {page}</span>
 

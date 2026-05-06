@@ -6,8 +6,8 @@ export const CrudApp = () => {
   return (
     <div className="min-h-screen bg-[#1a2c38] text-white p-6 font-sans">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold uppercase tracking-wider text-center mb-6">
-          Administrador de productos
+        <h1 className="text-3xl font-black uppercase tracking-[0.2em] text-center mb-10 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.6)]">
+            Administrador de productos
         </h1>
         <div className="bg-[#1e3a4d] p-4 rounded-lg shadow-lg border border-cyan-900/50">
           <SearchBar />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Select, { type SingleValue } from "react-select";
 import { useSearchParams } from "react-router-dom";
 import { useCategories } from "../../hooks/useCategories";
@@ -10,9 +10,34 @@ type SelectOption = {
 
 export const SearchBar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const query = searchParams.get("q") || "";
+
   const category = searchParams.get("category") || "";
-  
+
+  const [localQuery, setLocalQuery] = useState(query);
+
+  useEffect(() => {
+    setLocalQuery(query);
+  }, [query]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      // Solo actualizamos si el valor local es distinto al de la URL actual
+      if (localQuery !== query) {
+        if (localQuery) {
+          searchParams.set("q", localQuery);
+        } else {
+          searchParams.delete("q");
+        }
+        searchParams.set("page", "1");
+        setSearchParams(searchParams);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [localQuery, query, searchParams, setSearchParams]);
+
 
   const { data: listaCategorias } = useCategories();
 
@@ -23,10 +48,7 @@ export const SearchBar = () => {
     })) || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value;
-    if (text) searchParams.set("q", text);
-    else searchParams.delete("q");
-    setSearchParams(searchParams);
+    setLocalQuery(e.target.value);
   };
 
   const SelectValue = selectOptions.find((opt) => opt.value === category);
@@ -99,11 +121,12 @@ const customStyles = {
     <div className="flex flex-col gap-4">
       <div className="relative">
         <input
-          type="text"
-          value={query}
-          onChange={handleSearch}
-          placeholder="Buscar productos"
-        />
+        type="text"
+        value={localQuery}
+        onChange={handleSearch}
+        placeholder="Buscar productos"
+        className="w-full bg-[#162a37] border border-[#164e63] text-[#22d3ee] p-2 rounded outline-none focus:border-[#0891b2] transition-colors"
+      />
       </div>
 
       <div>
