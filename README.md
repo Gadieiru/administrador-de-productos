@@ -37,9 +37,12 @@
 
 # Instalación y Uso
 
-1) Clonar el repositorio:git clone https://github.com
+1) Clonar el repositorio: git clone https://github.com/Gadieiru/administrador-de-productos
+
 2) cd administrador-de-productos
+
 3) Instalar dependencias: npm install.
+
 4) Correr en modo desarrollo: npm run dev
  
 
